@@ -19,34 +19,47 @@ const RETRYABLE_ERRORS = new Set([
 
 export default {
   async scheduled(_event, env, ctx) {
-    ctx.waitUntil(run(env).then((r) => console.log(JSON.stringify(r))));
+    ctx.waitUntil(
+      run(env)
+        .then((r) => console.log(JSON.stringify(r)))
+        .catch((e) => console.error("run failed:", e?.message || e)),
+    );
   },
 
   async fetch(request, env) {
-    const url = new URL(request.url);
-
-    if (url.pathname === "/health") return json({ ok: true });
-
-    if (!isAuthorized(request, env)) return json({ error: "unauthorized" }, 401);
-
-    if (url.pathname === "/status" && request.method === "GET") {
-      const cfg = loadConfig(env);
-      const existing = await findExistingServers(env, cfg);
-      return json({ config: publicConfig(cfg), servers: existing.map(summarize) });
+    try {
+      return await handle(request, env);
+    } catch (e) {
+      console.error(e);
+      return json({ error: String(e?.message || e) }, 500);
     }
-
-    if (url.pathname === "/run" && request.method === "POST") {
-      return json(await run(env));
-    }
-
-    if (url.pathname === "/test-telegram" && request.method === "POST") {
-      await notify(env, "✅ Test message from hetzner-order-server");
-      return json({ ok: true });
-    }
-
-    return json({ error: "not found" }, 404);
   },
 };
+
+async function handle(request, env) {
+  const url = new URL(request.url);
+
+  if (url.pathname === "/health") return json({ ok: true });
+
+  if (!isAuthorized(request, env)) return json({ error: "unauthorized" }, 401);
+
+  if (url.pathname === "/status" && request.method === "GET") {
+    const cfg = loadConfig(env);
+    const existing = await findExistingServers(env, cfg);
+    return json({ config: publicConfig(cfg), servers: existing.map(summarize) });
+  }
+
+  if (url.pathname === "/run" && request.method === "POST") {
+    return json(await run(env));
+  }
+
+  if (url.pathname === "/test-telegram" && request.method === "POST") {
+    await notify(env, "✅ Test message from hetzner-order-server");
+    return json({ ok: true });
+  }
+
+  return json({ error: "not found" }, 404);
+}
 
 // ---------------------------------------------------------------------------
 
