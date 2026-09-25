@@ -19,6 +19,7 @@ const RETRYABLE_ERRORS = new Set([
 
 export default {
   async scheduled(_event, env, ctx) {
+    env = cleanSecrets(env);
     ctx.waitUntil(
       run(env)
         .then((r) => console.log(JSON.stringify(r)))
@@ -37,6 +38,7 @@ export default {
 };
 
 async function handle(request, env) {
+  env = cleanSecrets(env);
   const url = new URL(request.url);
 
   if (url.pathname === "/health") return json({ ok: true });
@@ -230,7 +232,15 @@ async function notify(env, text) {
       disable_web_page_preview: true,
     }),
   });
-  if (!res.ok) throw new Error(`Telegram ${res.status}: ${await res.text()}`);
+  if (!res.ok) {
+    let hint = "";
+    if (res.status === 404 || res.status === 401) {
+      hint = " — TELEGRAM_BOT_TOKEN is wrong (expected format 123456789:AA..., from @BotFather)";
+    } else if (res.status === 400) {
+      hint = " — check TELEGRAM_CHAT_ID and send /start to the bot first";
+    }
+    throw new Error(`Telegram ${res.status}: ${await res.text()}${hint}`);
+  }
 }
 
 // Avoid spamming Telegram every minute with the same config error.
@@ -264,6 +274,18 @@ function formatSuccess(cfg, data) {
 
 // ---------------------------------------------------------------------------
 // helpers
+
+// Tolerate copy-paste artifacts: surrounding spaces/newlines/quotes, and a
+// Telegram token pasted with the "bot" prefix from the API URL.
+function cleanSecrets(env) {
+  const clean = (v) => (typeof v === "string" ? v.trim().replace(/^["']|["']$/g, "").trim() : v);
+  const out = { ...env };
+  for (const k of ["HETZNER_API_TOKEN", "TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID", "ADMIN_TOKEN"]) {
+    out[k] = clean(env[k]);
+  }
+  if (out.TELEGRAM_BOT_TOKEN) out.TELEGRAM_BOT_TOKEN = out.TELEGRAM_BOT_TOKEN.replace(/^bot(?=\d+:)/, "");
+  return out;
+}
 
 function isAuthorized(request, env) {
   if (!env.ADMIN_TOKEN) return false; // HTTP endpoints disabled unless a token is set
