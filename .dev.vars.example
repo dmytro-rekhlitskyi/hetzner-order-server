@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local `wrangler dev`. Never commit .dev.vars.
+# In production set these with `wrangler secret put <NAME>`.
+HETZNER_API_TOKEN=
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+# Bearer token for the /status, /run and /test-telegram HTTP endpoints (optional)
+ADMIN_TOKEN=

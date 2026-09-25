@@ -1,0 +1,25 @@
+name = "hetzner-order-server"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+# Check every minute until a server is bought. After that each run is a
+# single cheap GET — or remove the cron once you have your VPS.
+[triggers]
+crons = ["* * * * *"]
+
+[observability]
+enabled = true
+
+# Non-secret settings. Secrets (tokens) go via `wrangler secret put`, see README.
+[vars]
+HETZNER_PROJECT = "marrek"
+# Priority order: tries cx33 first, then cx43.
+SERVER_TYPES = "cx33,cx43"
+# Empty = any location. Example: "fsn1,nbg1,hel1"
+LOCATIONS = ""
+IMAGE = "ubuntu-24.04"
+SERVER_NAME = "marrek-vps"
+# Comma-separated SSH key names/IDs from Hetzner console (optional).
+# If empty, Hetzner generates a root password and it is sent to Telegram.
+SSH_KEYS = ""
+ENABLE_IPV4 = "true"
