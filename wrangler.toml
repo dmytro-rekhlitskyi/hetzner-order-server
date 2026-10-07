@@ -18,7 +18,7 @@ SERVER_TYPES = "cx33,cx43"
 # Empty = any location. Example: "fsn1,nbg1,hel1"
 LOCATIONS = ""
 IMAGE = "ubuntu-24.04"
-SERVER_NAME = "marrek-vps"
+SERVER_NAME = "project-vps"
 # Comma-separated SSH key names/IDs from Hetzner console (optional).
 # If empty, Hetzner generates a root password and it is sent to Telegram.
 SSH_KEYS = ""
