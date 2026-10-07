@@ -25,7 +25,7 @@ Cloudflare Worker: раз в минуту проверяет Hetzner Cloud и п
 
 | Имя | Описание |
 |-----|----------|
-| `HETZNER_API_TOKEN` | Токен Hetzner Cloud с правами **Read & Write**: Console → проект `marrek` → Security → API tokens |
+| `HETZNER_API_TOKEN` | Токен Hetzner Cloud с правами **Read & Write**: Console → проект → Security → API tokens |
 | `TELEGRAM_BOT_TOKEN` | Токен бота от @BotFather |
 | `TELEGRAM_CHAT_ID` | ID чата, куда слать сообщения (можно узнать у @userinfobot). Сначала напишите своему боту `/start` |
 | `ADMIN_TOKEN` | *(опционально)* Bearer-токен для HTTP-эндпоинтов `/status`, `/run`, `/test-telegram` |
