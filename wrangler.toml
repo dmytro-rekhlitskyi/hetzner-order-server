@@ -12,7 +12,7 @@ enabled = true
 
 # Non-secret settings. Secrets (tokens) go via `wrangler secret put`, see README.
 [vars]
-HETZNER_PROJECT = "marrek"
+HETZNER_PROJECT = "project"
 # Priority order: tries cx33 first, then cx43.
 SERVER_TYPES = "cx33,cx43"
 # Empty = any location. Example: "fsn1,nbg1,hel1"
