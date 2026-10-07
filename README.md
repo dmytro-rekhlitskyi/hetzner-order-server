@@ -37,10 +37,10 @@ Cloudflare Worker: раз в минуту проверяет Hetzner Cloud и п
 | `SERVER_TYPES` | `cx33,cx43` | Типы серверов в порядке приоритета |
 | `LOCATIONS` | *(пусто = любые)* | Например `fsn1,nbg1,hel1` |
 | `IMAGE` | `ubuntu-24.04` | Образ ОС |
-| `SERVER_NAME` | `marrek-vps` | Имя сервера |
+| `SERVER_NAME` | `project-vps` | Имя сервера |
 | `SSH_KEYS` | *(пусто)* | Имена или ID SSH-ключей из Hetzner через запятую |
 | `ENABLE_IPV4` | `true` | `false` означает сервер только с IPv6 (чуть дешевле) |
-| `HETZNER_PROJECT` | `marrek` | Для текста уведомления |
+| `HETZNER_PROJECT` | `project` | Для текста уведомления |
 
 ## Деплой
 
